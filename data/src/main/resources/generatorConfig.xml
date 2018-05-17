@@ -40,8 +40,8 @@
             <property name="enableSubPackages" value="true"></property>
         </javaClientGenerator>
 
-        <table tableName="stock_day" >
-            <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+        <table tableName="deal_detail" >
+            <generatedKey column="id_deal_detail" sqlStatement="MySql" identity="true"></generatedKey>
         </table>
     </context>
 </generatorConfiguration>

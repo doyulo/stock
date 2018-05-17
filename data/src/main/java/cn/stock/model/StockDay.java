@@ -1,9 +1,10 @@
 package cn.stock.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class StockDay {
+public class StockDay implements Serializable{
     private Integer id;
 
     private String code;
@@ -185,5 +186,27 @@ public class StockDay {
 
     public void setFamc(BigDecimal famc) {
         this.famc = famc;
+    }
+
+    @Override
+    public String toString() {
+        return "StockDay{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", beginPri=" + beginPri +
+                ", maxPri=" + maxPri +
+                ", minPri=" + minPri +
+                ", prePri=" + prePri +
+                ", curPri=" + curPri +
+                ", dealQty=" + dealQty +
+                ", dealAmt=" + dealAmt +
+                ", rate=" + rate +
+                ", rateRange=" + rateRange +
+                ", inOutRate=" + inOutRate +
+                ", curDate=" + curDate +
+                ", marketCap=" + marketCap +
+                ", famc=" + famc +
+                '}';
     }
 }

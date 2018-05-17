@@ -93,4 +93,25 @@ public interface StockDayMapper {
 
     @Select("select max(cur_date) from stock_day where code='sh601318'")
     Date getLastSaveDay();
+
+    @Select("select id,code,name,begin_pri,max_pri,min_pri,pre_pri,cur_pri,deal_qty,deal_amt,rate,rate_range,in_out_rate,cur_date,market_cap,famc from stock_day where code=#{code,jdbcType=VARCHAR} and cur_date=#{curDate,jdbcType=DATE}")
+    @ConstructorArgs({
+            @Arg(column="id", javaType=Integer.class, jdbcType=JdbcType.INTEGER),
+            @Arg(column="code", javaType=String.class, jdbcType=JdbcType.VARCHAR),
+            @Arg(column="name", javaType=String.class, jdbcType=JdbcType.VARCHAR),
+            @Arg(column="begin_pri", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="max_pri", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="min_pri", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="pre_pri", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="cur_pri", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="deal_qty", javaType=Long.class, jdbcType=JdbcType.BIGINT),
+            @Arg(column="deal_amt", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="rate", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="rate_range", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="in_out_rate", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="cur_date", javaType=Date.class, jdbcType=JdbcType.DATE),
+            @Arg(column="market_cap", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL),
+            @Arg(column="famc", javaType=BigDecimal.class, jdbcType=JdbcType.DECIMAL)
+    })
+    StockDay getStock(@Param("code") String code,@Param("curDate") Date curDate);
 }

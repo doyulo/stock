@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class StockDayExample {
+
+    private Integer start;
+    private Integer limit;
+
     protected String orderByClause;
 
     protected boolean distinct;
@@ -1205,5 +1209,21 @@ public class StockDayExample {
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
         }
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

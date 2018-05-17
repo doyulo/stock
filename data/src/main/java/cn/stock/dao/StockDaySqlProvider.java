@@ -15,7 +15,15 @@ public class StockDaySqlProvider {
         SQL sql = new SQL();
         sql.SELECT("count(*)").FROM("stock_day");
         applyWhere(sql, example, false);
-        return sql.toString();
+
+        String limit = "";
+        if(example != null && example.getStart()!=null&&example.getLimit()!=null){
+            limit = " LIMIT "+example.getStart()+","+example.getLimit();
+        }else if(example != null && example.getLimit()!=null){
+            limit = " LIMIT "+example.getLimit();
+        }
+
+        return sql.toString()+limit;
     }
 
     public String deleteByExample(StockDayExample example) {
@@ -148,8 +156,15 @@ public class StockDaySqlProvider {
         if (example != null && example.getOrderByClause() != null) {
             sql.ORDER_BY(example.getOrderByClause());
         }
+
+        String limit = "";
+        if(example != null && example.getStart()!=null&&example.getLimit()!=null){
+            limit = " LIMIT "+example.getStart()+","+example.getLimit();
+        }else if(example != null && example.getLimit()!=null){
+            limit = " LIMIT "+example.getLimit();
+        }
         
-        return sql.toString();
+        return sql.toString()+limit;
     }
 
     public String updateByExampleSelective(Map<String, Object> parameter) {
