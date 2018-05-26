@@ -33,12 +33,11 @@ public class StockApplicationTests {
 
 	@Test
 	public void saveAllTimeDeal(){
-		dataDeal.saveAllTimeDeal("20180509");
-		dataDeal.saveAllTimeDeal("20180510");
-		dataDeal.saveAllTimeDeal("20180511");
-		dataDeal.saveAllTimeDeal("20180514");
-		dataDeal.saveAllTimeDeal("20180515");
-        dataDeal.saveAllTimeDeal("20180516");
+		dataDeal.saveAllTimeDeal("20180521");
+		dataDeal.saveAllTimeDeal("20180522");
+		dataDeal.saveAllTimeDeal("20180523");
+		dataDeal.saveAllTimeDeal("20180524");
+		dataDeal.saveAllTimeDeal("20180525");
 	}
 
 	@Test

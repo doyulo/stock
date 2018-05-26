@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class DataFetcher {
@@ -19,21 +16,22 @@ public class DataFetcher {
 
     public void fetch(Set<String> codeBatch){
         List<String> list = new ArrayList<>(codeBatch);
+        Collections.sort(list);
         Integer batchCount = list.size()/batchSize;
         for (int i = 0; i < batchCount; i++) {
             String cs = String.join(",", list.subList(batchSize*i,batchSize*(i+1)));
             String res = restTemplate.getForObject(url, String.class, cs);
             putToBuffer(res);
-            System.out.println(res);
+//            System.out.println(res);
         }
 
         if(list.size()%batchSize!=0){
             String cs = String.join(",", list.subList(batchSize*batchCount,list.size()));
             String res = restTemplate.getForObject(url, String.class, cs);
             putToBuffer(res);
-            System.out.println(res);
+//            System.out.println(res);
         }
-        System.out.println(StockURLDataBuffer.getData().size());
+//        System.out.println(StockURLDataBuffer.getData().size());
     }
 
     public void filterAviableCodesToBuffer(){

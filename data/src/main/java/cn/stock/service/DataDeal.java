@@ -258,16 +258,16 @@ public class DataDeal {
         for (String code : codeSet) {
             try {
                 parseCsvToDatabase(code,lastSaveDay,lastDealDay);
-                saveDayDetail(code,"20180509");
-                saveDayDetail(code,"20180510");
-                saveDayDetail(code,"20180511");
-                saveDayDetail(code,"20180514");
-                saveDayDetail(code,"20180515");
-                saveDayDetail(code,"20180516");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        saveAllTimeDeal("20180521");
+        saveAllTimeDeal("20180522");
+        saveAllTimeDeal("20180523");
+        saveAllTimeDeal("20180524");
+        saveAllTimeDeal("20180525");
 
     }
 
