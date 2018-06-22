@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @RunWith(SpringRunner.class)
@@ -33,11 +34,20 @@ public class StockApplicationTests {
 
 	@Test
 	public void saveAllTimeDeal(){
-		dataDeal.saveAllTimeDeal("20180521");
-		dataDeal.saveAllTimeDeal("20180522");
-		dataDeal.saveAllTimeDeal("20180523");
-		dataDeal.saveAllTimeDeal("20180524");
-		dataDeal.saveAllTimeDeal("20180525");
+//		dataDeal.saveAllTimeDeal("20180521");
+//		dataDeal.saveAllTimeDeal("20180522");
+//		dataDeal.saveAllTimeDeal("20180523");
+//		dataDeal.saveAllTimeDeal("20180529");
+//		dataDeal.saveAllTimeDeal("20180530");
+//		dataDeal.saveAllTimeDeal("20180531");
+		dataDeal.saveAllTimeDeal("20180608");
+
+		Runtime r = Runtime.getRuntime();
+		try {
+			r.exec("shutdown -s");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test

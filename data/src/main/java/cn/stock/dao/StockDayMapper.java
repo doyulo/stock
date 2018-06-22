@@ -58,6 +58,7 @@ public interface StockDayMapper {
             "</foreach>"+
             "</script>"
     )
+
     int insertAll(@Param("records") List<StockDay> records);
 
     @InsertProvider(type=StockDaySqlProvider.class, method="insertSelective")
