@@ -17,4 +17,9 @@ public class TestTemp {
         System.out.println(arr);
         System.out.println(arr2);
     }
+
+    @Test
+    public void time(){
+        System.out.println(System.currentTimeMillis());
+    }
 }

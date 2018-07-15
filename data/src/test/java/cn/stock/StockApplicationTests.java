@@ -2,7 +2,10 @@ package cn.stock;
 
 import cn.stock.dao.StockDayMapper;
 import cn.stock.service.DataDeal;
-import cn.stock.service.DataFetcher;
+import cn.stock.service.DataDealStock;
+import cn.stock.service.IndustrySave;
+import cn.stock.service.SinaDataFetcher;
+import cn.stock.service.alyz.Alyz;
 import cn.stock.service.neuralnet.GravesLSTMStockModeling;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +23,15 @@ public class StockApplicationTests {
 	@Autowired
 	private DataDeal dataDeal;
 	@Autowired
-	private DataFetcher dataFetcher;
+	private SinaDataFetcher dataFetcher;
 	@Autowired
 	private GravesLSTMStockModeling gravesLSTMStockModeling;
     @Autowired
     private StockDayMapper stockDayMapper;
+    @Autowired
+	private Alyz alyz;
+    @Autowired
+	private DataDealStock dataDealStock;
 
 	@Test
 	public void contextLoads() {
@@ -40,7 +47,7 @@ public class StockApplicationTests {
 //		dataDeal.saveAllTimeDeal("20180529");
 //		dataDeal.saveAllTimeDeal("20180530");
 //		dataDeal.saveAllTimeDeal("20180531");
-		dataDeal.saveAllTimeDeal("20180608");
+		dataDeal.saveAllTimeDeal("20180619");
 
 		Runtime r = Runtime.getRuntime();
 		try {
@@ -50,53 +57,39 @@ public class StockApplicationTests {
 		}
 	}
 
-	@Test
-	public void saveToday(){
-		dataDeal.saveToday();
-        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String lastDealDay = dataFetcher.getLastDealDay().replaceAll("-","");
-
-        Date lastSaveDate = stockDayMapper.getLastSaveDay();
-        String lastSaveDay;
-        if(lastSaveDate==null){
-            lastSaveDay = "19900101";
-        }else{
-            Calendar ca = Calendar.getInstance();
-            if(lastDealDay.equals(sdf.format(lastSaveDate))){
-                System.out.println("nothing for update!!!");
-                return;
-            }
-            ca.setTime(lastSaveDate);
-            ca.add(Calendar.DAY_OF_MONTH,1);
-            lastSaveDate = ca.getTime();
-            lastSaveDay = sdf.format(lastSaveDate);
-        }
-
-
-
-        dataFetcher.filterAviableCodesToBuffer();
-        HashMap<String, String> data = StockURLDataBuffer.getData();
-        Set<String> codeSet = data.keySet();
-//        Set<String> codeSet = new HashSet<>();
-//        codeSet.add("sz000047");
-        for (String code : codeSet) {
-            try {
-                dataDeal.parseCsvToDatabase(code,lastSaveDay,lastDealDay);
-                dataDeal.saveDayDetail(code,"20180509");
-                dataDeal.saveDayDetail(code,"20180510");
-                dataDeal.saveDayDetail(code,"20180511");
-                dataDeal.saveDayDetail(code,"20180514");
-                dataDeal.saveDayDetail(code,"20180515");
-                dataDeal.saveDayDetail(code,"20180516");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
-	}
 
 	@Test
 	public void testFetch(){
 //		dataFetcher.saveAllTimeDeal();
+	}
+
+	@Test
+	public void saveToday(){
+		dataDeal.saveToday();
+	}
+	@Test
+	public void testWeightAlzy(){
+		/*try {
+			dataDealStock.parseCsvToDatabase("sh000001", "19800101", "20180801");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+//		dataDeal.saveToday();
+//		alyz.reAlyzWeight();
+
+//		alyz.reAlyzWeight("sz300540");
+//		alyz.reAlyzWeight("sz000732");
+		alyz.reAlyzWeight("sh600019");
+
+//		alyz.reAlyzWeight();
+	}
+
+	@Autowired
+	private IndustrySave industrySave;
+	@Test
+	public void saveIndustry(){
+//		industrySave.saveEastMoneyIndustry();
+		industrySave.saveRela();
 	}
 
 	@Test

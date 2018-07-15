@@ -222,7 +222,7 @@ public class GravesLSTMStockModeling {
 
         for (String code : codes) {
             StockDayExample stockDayExample = new StockDayExample();
-            stockDayExample.createCriteria().andCodeEqualTo(code).andCurDateLessThan(sdf.parse(date));
+            stockDayExample.createCriteria().andCodeEqualTo(code).andCurDateLessThan(sdf.parse(date)).andCurPriNotEqualTo(BigDecimal.ZERO);
             stockDayExample.setLimit(length);
             stockDayExample.setOrderByClause("cur_date desc");
             List<StockDay> stockDays = stockDayMapper.selectByExample(stockDayExample);

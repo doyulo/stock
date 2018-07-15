@@ -7,11 +7,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @Service
-public class DataFetcher {
+public class TencentDataFetcher {
     @Autowired
     private RestTemplate restTemplate;
 
-    private String url = "http://hq.sinajs.cn/list={0}";
+    private String url = "http://web.sqt.gtimg.cn/q={0}";
     private Integer batchSize = 250;
 
     public void fetch(Set<String> codeBatch){
@@ -53,14 +53,12 @@ public class DataFetcher {
     }
 
     private void putToBuffer(String res){
-        res = res.replaceAll("var hq_str_","");
-        res = res.replaceAll(";","");
-        String[] code_value = res.split("\n");
+        res = res.replaceAll("v_","");
+        String[] code_value = res.split("; ");
         for (String cv : code_value) {
             String[] v = cv.split("=");
-            if(!"\"\"".equals(v[1])){
-                StockURLDataBuffer.put(v[0],v[1]);
-            }
+            v[1] = v[1].replaceAll("\"","");
+            StockURLDataBuffer.putTencent(v[0],v[1]);
         }
     }
 
@@ -81,9 +79,10 @@ public class DataFetcher {
 
     public String getLastDealDay(){
         String res = restTemplate.getForObject(url, String.class, "sh000001");
-        res = res.replaceAll("var hq_str_","");
+        res = res.replaceAll("v_","");
+        res = res.replaceAll("\"","");
         res = res.replaceAll(";","");
         String[] split = res.split("=");
-        return split[1].split(",")[30];
+        return split[1].split(",")[30].substring(0,8);
     }
 }

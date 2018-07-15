@@ -20,7 +20,7 @@ public class DataDeal {
     @Autowired
     private StockDayMapper stockDayMapper;
     @Autowired
-    private DataFetcher dataFetcher;
+    private SinaDataFetcher dataFetcher;
     @Autowired
     private DataDealStock dataDealStock;
     @Autowired

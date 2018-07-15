@@ -9,13 +9,25 @@ public class StockURLDataBuffer {
         return data;
     }
 
-    public static void put(String code,String res){
+    public static void putSina(String code, String res){
         synchronized (data) {
             data.put(code, res);
         }
     }
 
-    public static String getUrlData(String code){
+    public static String getSinaUrlData(String code){
+        synchronized (data) {
+            return data.get(code);
+        }
+    }
+
+    public static void putTencent(String code, String res){
+        synchronized (data) {
+            data.put(code, res);
+        }
+    }
+
+    public static String getTencentUrlData(String code){
         synchronized (data) {
             return data.get(code);
         }

@@ -40,8 +40,9 @@
             <property name="enableSubPackages" value="true"></property>
         </javaClientGenerator>
 
-        <table tableName="deal_detail" >
-            <generatedKey column="id_deal_detail" sqlStatement="MySql" identity="true"></generatedKey>
-        </table>
+        <!--<table tableName="rask_alyz" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+        </table>-->
+
     </context>
 </generatorConfiguration>

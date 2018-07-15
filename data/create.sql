@@ -49,3 +49,49 @@ CREATE TABLE deal_detail
 CREATE INDEX index_deal_detail
   ON deal_detail (parent_id);
 
+create table rask_alyz
+(
+	id bigint auto_increment
+		primary key,
+	code varchar(8) null,
+	name varchar(8) null,
+	cur_pri decimal(8,2) null,
+	avr_pri decimal(9,3) null,
+	avr_pri_1 decimal(9,3) null,
+	avr_pri_2 decimal(9,3) null,
+	rate decimal(8,2) null,
+	slope int null,
+	slope1 int null,
+	slope2 int null,
+	deal_date date null,
+	hold tinyint(1) null,
+	reversal_rate varchar(80) null,
+	remark varchar(300) null
+)
+;
+
+create index inx_rask_alyz_code
+	on rask_alyz (code)
+;
+
+create index inx_rask_alyz_day
+	on rask_alyz (deal_date)
+;
+
+create table code_industry_rela
+(
+	code varchar(8) not null,
+	industry varchar(8) not null,
+	primary key (code, industry)
+)
+;
+
+create table east_money_indestry
+(
+	code varchar(8) not null
+		primary key,
+	name varchar(8) not null
+)
+;
+
+
