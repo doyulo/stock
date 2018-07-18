@@ -2,10 +2,8 @@ package cn.stock.service.alyz;
 
 import cn.stock.dao.RaskAlyzMapper;
 import cn.stock.dao.StockDayMapper;
-import cn.stock.model.RaskAlyz;
-import cn.stock.model.RaskAlyzExample;
-import cn.stock.model.StockDay;
-import cn.stock.model.StockDayExample;
+import cn.stock.model.*;
+import cn.stock.service.DataBuffer;
 import cn.stock.service.SinaDataFetcher;
 import cn.stock.service.StockURLDataBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,21 @@ public class Alyz {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public void alyzWeight(String code){
+    public void saveAlyzWeight(String code){
+        List<RaskAlyz> raskAlyzs = alyzWeight(code);
+
+        if (raskAlyzs!=null&&raskAlyzs.size()!=0){
+            raskAlyzMapper.insertAll(raskAlyzs);
+        }
+
+    }
+
+    public List<RaskAlyz> alyzWeight(String code){
+        return alyzWeight(code,false);
+    }
+
+
+    public List<RaskAlyz> alyzWeight(String code,boolean now){
         Date earlier_day = null;
         try {
             earlier_day  = simpleDateFormat.parse("2014-01-01");
@@ -47,26 +59,33 @@ public class Alyz {
         }
 
         if(stockDays.size()<30){
-            return;
+            return null;
+        }
+
+        if(now){
+            TimeStock timeStock = DataBuffer.getTimeStockMap().get(code);
+            if(!timeStock.getCurPri().equals(BigDecimal.ZERO)&&!timeStock.getMarketCap().equals(BigDecimal.ZERO)){
+                stockDays.add(timeStock);
+            }
         }
 
         WeightAlyz weightAlyz = new WeightAlyz();
         MockDealShortDays mockDealShortDays = new MockDealShortDays();
 
         List<RaskAlyz> raskAlyzs = weightAlyz.alyzOneStock(stockDays);
+        System.out.println(code);
         BigDecimal profit = mockDealShortDays.mockDeal(raskAlyzs);
         System.out.println(code+"利润："+profit.toString());
-//        weightAlyz.alyzWeightActualTime(raskAlyzs);
 
-        raskAlyzMapper.insertAll(raskAlyzs);
-
+        return raskAlyzs;
     }
+
 
     public void reAlyzWeight(String code){
         RaskAlyzExample raskAlyzExample = new RaskAlyzExample();
         raskAlyzExample.createCriteria().andCodeEqualTo(code);
         raskAlyzMapper.deleteByExample(raskAlyzExample);
-            alyzWeight(code);
+        saveAlyzWeight(code);
 
     }
 
@@ -82,7 +101,7 @@ public class Alyz {
         Collections.sort(codeList);
 
         for (String code : codeList) {
-            alyzWeight(code);
+            saveAlyzWeight(code);
         }
 
     }

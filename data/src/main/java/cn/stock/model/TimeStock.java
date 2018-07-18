@@ -1,8 +1,9 @@
 package cn.stock.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class TimeStock extends StockDay{
+public class TimeStock extends StockDay implements Serializable {
 
     private BigDecimal sell1_pri;
     private BigDecimal sell2_pri;

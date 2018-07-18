@@ -54,7 +54,8 @@ public class TencentDataFetcher {
 
     private void putToBuffer(String res){
         res = res.replaceAll("v_","");
-        String[] code_value = res.split("; ");
+        res = res.replaceAll("\n","");
+        String[] code_value = res.split(";");
         for (String cv : code_value) {
             String[] v = cv.split("=");
             v[1] = v[1].replaceAll("\"","");

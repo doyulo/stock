@@ -68,7 +68,7 @@ public class MockDealShortDays {
                     is_hold = (slope>=0&&slope-pre_slope>160&&pre_slope<100)||(slope<-380&&rate>-9.9);
 
                     if(is_hold){
-                        hold_qty = capital.divide(raskAlyz.getCurPri(),BigDecimal.ROUND_DOWN).intValue();
+                        hold_qty = capital.divide(raskAlyz.getCurPri(),0,BigDecimal.ROUND_DOWN).intValue();
                         capital = capital.subtract(raskAlyz.getCurPri().multiply(new BigDecimal(hold_qty)));
                     }
                 }

@@ -75,11 +75,11 @@ public class StockApplicationTests {
 			e.printStackTrace();
 		}*/
 //		dataDeal.saveToday();
-//		alyz.reAlyzWeight();
+		alyz.reAlyzWeight();
 
 //		alyz.reAlyzWeight("sz300540");
 //		alyz.reAlyzWeight("sz000732");
-		alyz.reAlyzWeight("sh600019");
+//		alyz.reAlyzWeight("sh600019");
 
 //		alyz.reAlyzWeight();
 	}
