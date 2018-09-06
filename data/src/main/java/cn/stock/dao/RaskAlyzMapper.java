@@ -30,13 +30,15 @@ public interface RaskAlyzMapper {
         "avr_pri_1, avr_pri_2, ",
         "rate, slope, slope1, ",
         "slope2, deal_date, hold, ",
-        "reversal_rate, remark)",
+        "reversal_rate, high_risk_days, ",
+        "remark, postive_days)",
         "values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, ",
         "#{curPri,jdbcType=DECIMAL}, #{avrPri,jdbcType=DECIMAL}, ",
         "#{avrPri1,jdbcType=DECIMAL}, #{avrPri2,jdbcType=DECIMAL}, ",
         "#{rate,jdbcType=DECIMAL}, #{slope,jdbcType=INTEGER}, #{slope1,jdbcType=INTEGER}, ",
         "#{slope2,jdbcType=INTEGER}, #{dealDate,jdbcType=DATE}, #{hold,jdbcType=BIT}, ",
-        "#{reversalRate,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})"
+        "#{reversalRate,jdbcType=VARCHAR}, #{highRiskDays,jdbcType=INTEGER}, ",
+        "#{remark,jdbcType=VARCHAR}, #{postiveDays,jdbcType=INTEGER})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insert(RaskAlyz record);
@@ -52,7 +54,7 @@ public interface RaskAlyzMapper {
             "avr_pri_1, avr_pri_2, ",
             "rate, slope, slope1, ",
             "slope2, deal_date, hold, ",
-            "remark, reversal_rate)",
+            "remark, reversal_rate,high_risk_days,postive_days)",
             "values ",
             "<foreach collection =\"records\" item=\"record\" index= \"index\" separator =\",\"> ",
             "(#{record.code,jdbcType=VARCHAR}, #{record.name,jdbcType=VARCHAR}, ",
@@ -60,12 +62,16 @@ public interface RaskAlyzMapper {
             "#{record.avrPri1,jdbcType=DECIMAL}, #{record.avrPri2,jdbcType=DECIMAL}, ",
             "#{record.rate,jdbcType=DECIMAL}, #{record.slope,jdbcType=INTEGER}, #{record.slope1,jdbcType=INTEGER}, ",
             "#{record.slope2,jdbcType=INTEGER}, #{record.dealDate,jdbcType=DATE}, #{record.hold,jdbcType=BIT}, ",
-            "#{record.remark,jdbcType=VARCHAR}, #{record.reversalRate,jdbcType=DECIMAL})",
+            "#{record.remark,jdbcType=VARCHAR}, #{record.reversalRate,jdbcType=DECIMAL},#{record.highRiskDays,jdbcType=INTEGER},",
+            "#{record.postiveDays,jdbcType=INTEGER})",
             "</foreach>",
             "</script>"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insertAll(@Param("records") List<RaskAlyz> records);
+
+    @Select("select max(deal_date) from rask_alyz where code='sh601318'")
+    Date getLastAlyzDay();
 
     @SelectProvider(type=RaskAlyzSqlProvider.class, method="selectByExample")
     @ConstructorArgs({
@@ -83,14 +89,16 @@ public interface RaskAlyzMapper {
         @Arg(column="deal_date", javaType=Date.class, jdbcType=JdbcType.DATE),
         @Arg(column="hold", javaType=Boolean.class, jdbcType=JdbcType.BIT),
         @Arg(column="reversal_rate", javaType=String.class, jdbcType=JdbcType.VARCHAR),
-        @Arg(column="remark", javaType=String.class, jdbcType=JdbcType.VARCHAR)
+        @Arg(column="high_risk_days", javaType=Integer.class, jdbcType=JdbcType.INTEGER),
+        @Arg(column="remark", javaType=String.class, jdbcType=JdbcType.VARCHAR),
+        @Arg(column="postive_days", javaType=Integer.class, jdbcType=JdbcType.INTEGER)
     })
     List<RaskAlyz> selectByExample(RaskAlyzExample example);
 
     @Select({
         "select",
         "id, code, name, cur_pri, avr_pri, avr_pri_1, avr_pri_2, rate, slope, slope1, ",
-        "slope2, deal_date, hold, reversal_rate, remark",
+        "slope2, deal_date, hold, reversal_rate, high_risk_days, remark, postive_days",
         "from rask_alyz",
         "where id = #{id,jdbcType=BIGINT}"
     })
@@ -109,7 +117,9 @@ public interface RaskAlyzMapper {
         @Arg(column="deal_date", javaType=Date.class, jdbcType=JdbcType.DATE),
         @Arg(column="hold", javaType=Boolean.class, jdbcType=JdbcType.BIT),
         @Arg(column="reversal_rate", javaType=String.class, jdbcType=JdbcType.VARCHAR),
-        @Arg(column="remark", javaType=String.class, jdbcType=JdbcType.VARCHAR)
+        @Arg(column="high_risk_days", javaType=Integer.class, jdbcType=JdbcType.INTEGER),
+        @Arg(column="remark", javaType=String.class, jdbcType=JdbcType.VARCHAR),
+        @Arg(column="postive_days", javaType=Integer.class, jdbcType=JdbcType.INTEGER)
     })
     RaskAlyz selectByPrimaryKey(Long id);
 
@@ -137,7 +147,9 @@ public interface RaskAlyzMapper {
           "deal_date = #{dealDate,jdbcType=DATE},",
           "hold = #{hold,jdbcType=BIT},",
           "reversal_rate = #{reversalRate,jdbcType=VARCHAR},",
-          "remark = #{remark,jdbcType=VARCHAR}",
+          "high_risk_days = #{highRiskDays,jdbcType=INTEGER},",
+          "remark = #{remark,jdbcType=VARCHAR},",
+          "postive_days = #{postiveDays,jdbcType=INTEGER}",
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(RaskAlyz record);

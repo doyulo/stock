@@ -1,10 +1,7 @@
 package cn.stock;
 
 import cn.stock.dao.StockDayMapper;
-import cn.stock.service.DataDeal;
-import cn.stock.service.DataDealStock;
-import cn.stock.service.IndustrySave;
-import cn.stock.service.SinaDataFetcher;
+import cn.stock.service.*;
 import cn.stock.service.alyz.Alyz;
 import cn.stock.service.neuralnet.GravesLSTMStockModeling;
 import org.junit.Test;
@@ -15,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -97,4 +95,14 @@ public class StockApplicationTests {
 		gravesLSTMStockModeling.train();
 	}
 
+	@Autowired
+	private NoticeFetcher noticeFetcher;
+	@Test
+	public void noticeTest(){
+		Set<String> codeSet = DataBuffer.getTimeStockMap().keySet();
+		for (String code : codeSet) {
+
+			System.out.println(noticeFetcher.noticeAlyz(code));
+		}
+	}
 }

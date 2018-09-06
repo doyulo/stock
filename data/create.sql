@@ -94,4 +94,17 @@ create table east_money_indestry
 )
 ;
 
+create table care_about
+(
+	code varchar(8) not null
+		primary key,
+	name varchar(8) not null
+)
+;
+
+ALTER TABLE rask_alyz ADD high_risk_days int NULL;
+ALTER TABLE rask_alyz ADD postive_days int NULL;
+ALTER TABLE rask_alyz
+  MODIFY COLUMN remark varchar(300) AFTER high_risk_days;
+
 

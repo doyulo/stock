@@ -78,6 +78,42 @@ public class WeightAlyz {
         return raskAlyzs;
     }
 
+    public RaskAlyz initRaskAlyz(RaskAlyz pre_raskAlyz,StockDay stock){
+        RaskAlyz raskAlyz = new RaskAlyz();
+
+        double curPri = stock.getMarketCap().doubleValue()/100000000;
+
+        double tempAviPri = pre_raskAlyz.getAvrPri().doubleValue();
+        double tempAviPri1 = pre_raskAlyz.getAvrPri1().doubleValue();
+        double tempAviPri2 = pre_raskAlyz.getAvrPri2().doubleValue();
+
+        double avr_pri = curPri*(1-weigth)+tempAviPri*weigth;
+        double avr_pri1 = curPri*(1-weigth1)+tempAviPri1*weigth1;
+        double avr_pri2 = curPri*(1-weigth2)+tempAviPri2*weigth2;
+
+        int slope = (int) ((avr_pri-tempAviPri)*10000/tempAviPri);
+        int slope1 = (int) ((avr_pri1-tempAviPri1)*10000/tempAviPri1);
+        int slope2 = (int) ((avr_pri2-tempAviPri2)*10000/tempAviPri2);
+
+        raskAlyz.setAvrPri(new BigDecimal(avr_pri).setScale(2,BigDecimal.ROUND_HALF_UP));
+        raskAlyz.setAvrPri1(new BigDecimal(avr_pri1).setScale(2,BigDecimal.ROUND_HALF_UP));
+        raskAlyz.setAvrPri2(new BigDecimal(avr_pri2).setScale(2,BigDecimal.ROUND_HALF_UP));
+
+        raskAlyz.setSlope(slope);
+        raskAlyz.setSlope1(slope1);
+        raskAlyz.setSlope2(slope2);
+
+        raskAlyz.setCode(stock.getCode());
+        raskAlyz.setName(stock.getName());
+        raskAlyz.setCurPri(new BigDecimal(curPri).setScale(2,BigDecimal.ROUND_HALF_UP));
+        raskAlyz.setRate(stock.getRate());
+        raskAlyz.setDealDate(stock.getCurDate());
+        raskAlyz.setHold(false);
+        raskAlyz.setRemark("xx");
+
+        return raskAlyz;
+    }
+
     public void alyzWeightActualTime(List<RaskAlyz> raskAlyzs){
 
         RaskAlyz lastRaskAlyz = raskAlyzs.get(raskAlyzs.size() - 1);

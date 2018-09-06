@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>管理</title>
+    <link href="/css/layui.css" rel="stylesheet"/>
+    <script src="/layui.all.js"></script>
+    <script>
+        function backup() {
+
+            layui.jquery.ajax({
+                url:"/saveHistory"
+            });
+
+        }
+
+        function alyzSave() {
+
+            layui.jquery.ajax({
+                url:"/reAlyz"
+            });
+
+        }
+
+        function alyzSaveNow() {
+
+            layui.jquery.ajax({
+                url:"/reAlyzNow"
+            });
+
+        }
+
+        function addCareAbout() {
+            var code = layui.jquery("#code").val();
+            layui.jquery.ajax({
+                url:"/add_careabout?code="+code
+            });
+
+        }
+
+    </script>
+</head>
+<body>
+
+<div class="layui-row layui-col-space3">
+    <div class="layui-col-md4">
+        <a href="javascript:alyzSaveNow()" class="layui-btn layui-btn-lg layui-btn-normal">实时备份分析</a>
+    </div>
+    <div class="layui-col-md4">
+        <a href="javascript:backup()" class="layui-btn layui-btn-lg layui-btn-normal">备份</a>
+    </div>
+    <div class="layui-col-md4">
+        <a href="javascript:alyzSave()" class="layui-btn layui-btn-lg layui-btn-normal">分析</a>
+    </div>
+    <div class="layui-col-md4">
+        <input id="code" type="text" name="code" required  lay-verify="required" placeholder="请输入代码" autocomplete="off" class="layui-input">
+        <a href="javascript:addCareAbout()" class="layui-btn layui-btn-lg layui-btn-normal">加自选</a>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

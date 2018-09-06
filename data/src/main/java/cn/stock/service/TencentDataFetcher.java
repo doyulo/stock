@@ -84,6 +84,7 @@ public class TencentDataFetcher {
         res = res.replaceAll("\"","");
         res = res.replaceAll(";","");
         String[] split = res.split("=");
-        return split[1].split(",")[30].substring(0,8);
+        String[] split1 = split[1].split("~");
+        return split1[30].substring(0,8);
     }
 }

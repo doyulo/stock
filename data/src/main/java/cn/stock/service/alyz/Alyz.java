@@ -4,8 +4,8 @@ import cn.stock.dao.RaskAlyzMapper;
 import cn.stock.dao.StockDayMapper;
 import cn.stock.model.*;
 import cn.stock.service.DataBuffer;
-import cn.stock.service.SinaDataFetcher;
 import cn.stock.service.StockURLDataBuffer;
+import cn.stock.service.TencentDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +21,12 @@ public class Alyz {
     @Autowired
     private StockDayMapper stockDayMapper;
     @Autowired
-    private SinaDataFetcher dataFetcher;
+    private TencentDataFetcher dataFetcher;
+    @Autowired
+    private MockDealShortDays mockDealShortDays;
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyyMMdd");
 
     public void saveAlyzWeight(String code){
         List<RaskAlyz> raskAlyzs = alyzWeight(code);
@@ -47,9 +50,18 @@ public class Alyz {
             e.printStackTrace();
         }
 
+        Date curDealDate = new Date();
+
+        try {
+            curDealDate = simpleDateFormat2.parse(dataFetcher.getLastDealDay());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         StockDayExample stockDayExample = new StockDayExample();
         stockDayExample.createCriteria().andCodeEqualTo(code).andCurDateGreaterThan(earlier_day)
-                .andCurPriNotEqualTo(BigDecimal.ZERO).andMarketCapNotEqualTo(BigDecimal.ZERO);
+                .andCurPriNotEqualTo(BigDecimal.ZERO).andMarketCapNotEqualTo(BigDecimal.ZERO)
+                .andCurDateLessThan(curDealDate);
         stockDayExample.setOrderByClause(" cur_date asc");
         stockDayExample.setStart(20);
         List<StockDay> stockDays = stockDayMapper.selectByExample(stockDayExample);
@@ -70,10 +82,9 @@ public class Alyz {
         }
 
         WeightAlyz weightAlyz = new WeightAlyz();
-        MockDealShortDays mockDealShortDays = new MockDealShortDays();
 
         List<RaskAlyz> raskAlyzs = weightAlyz.alyzOneStock(stockDays);
-        System.out.println(code);
+
         BigDecimal profit = mockDealShortDays.mockDeal(raskAlyzs);
         System.out.println(code+"利润："+profit.toString());
 
@@ -104,6 +115,78 @@ public class Alyz {
             saveAlyzWeight(code);
         }
 
+    }
+
+    public Set<String> alyzWeightNow(boolean isAll){
+        Set<String> codeSet = new HashSet<>();
+        Date lastAlyzDay = raskAlyzMapper.getLastAlyzDay();
+
+        //判断是否已保存结果
+        Date curDealDate ;
+        try {
+            curDealDate = simpleDateFormat2.parse(dataFetcher.getLastDealDay());
+            if(lastAlyzDay.equals(curDealDate)){
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(curDealDate);
+                calendar.add(Calendar.DATE, -1);
+                lastAlyzDay = calendar.getTime();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        RaskAlyzExample raskAlyzExample = new RaskAlyzExample();
+        raskAlyzExample.createCriteria().andDealDateEqualTo(lastAlyzDay);
+        List<RaskAlyz> raskAlyzs = raskAlyzMapper.selectByExample(raskAlyzExample);
+        WeightAlyz weightAlyz = new WeightAlyz();
+        for (RaskAlyz pre_raskAlyz : raskAlyzs) {
+            RaskAlyz raskAlyz = weightAlyz.initRaskAlyz(pre_raskAlyz, DataBuffer.getTimeStockMap().get(pre_raskAlyz.getCode()));
+            mockDealShortDays.mockDeal(pre_raskAlyz,raskAlyz);
+            if(raskAlyz.getHold()){
+                if(isAll){
+                    codeSet.add(raskAlyz.getCode());
+                }else if(!pre_raskAlyz.getHold()){
+                    codeSet.add(raskAlyz.getCode());
+                }
+            }
+        }
+        return codeSet;
+    }
+
+    public void saveWeightNowAll(){
+        Collection<TimeStock> values = DataBuffer.getTimeStockMap().values();
+
+        Date curDealDate = new Date();
+        try {
+            curDealDate = simpleDateFormat2.parse(dataFetcher.getLastDealDay());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        StockDayExample stockDayExample = new StockDayExample();
+        stockDayExample.createCriteria().andCurDateEqualTo(curDealDate);
+        stockDayMapper.deleteByExample(stockDayExample);
+
+        for (TimeStock ts : values) {
+            ts.setCurDate(curDealDate);
+            stockDayMapper.insertSelective(ts);
+        }
+
+        Date lastAlyzDay = raskAlyzMapper.getLastAlyzDay();
+        RaskAlyzExample raskAlyzExample = new RaskAlyzExample();
+        raskAlyzExample.createCriteria().andDealDateEqualTo(lastAlyzDay);
+        List<RaskAlyz> raskAlyzs = raskAlyzMapper.selectByExample(raskAlyzExample);
+        WeightAlyz weightAlyz = new WeightAlyz();
+        List<RaskAlyz> raskAlyzsNow = new ArrayList<>();
+
+        for (RaskAlyz pre_raskAlyz : raskAlyzs) {
+            RaskAlyz raskAlyz = weightAlyz.initRaskAlyz(pre_raskAlyz, DataBuffer.getTimeStockMap().get(pre_raskAlyz.getCode()));
+            mockDealShortDays.mockDeal(pre_raskAlyz, raskAlyz);
+            raskAlyzsNow.add(raskAlyz);
+        }
+        if(raskAlyzsNow.size()>0){
+            raskAlyzMapper.insertAll(raskAlyzsNow);
+        }
     }
 
 }

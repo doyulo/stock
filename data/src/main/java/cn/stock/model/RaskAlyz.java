@@ -1,5 +1,7 @@
 package cn.stock.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -26,15 +28,20 @@ public class RaskAlyz {
 
     private Integer slope2;
 
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date dealDate;
 
     private Boolean hold;
 
     private String reversalRate;
 
+    private Integer highRiskDays;
+
     private String remark;
 
-    public RaskAlyz(Long id, String code, String name, BigDecimal curPri, BigDecimal avrPri, BigDecimal avrPri1, BigDecimal avrPri2, BigDecimal rate, Integer slope, Integer slope1, Integer slope2, Date dealDate, Boolean hold, String reversalRate, String remark) {
+    private Integer postiveDays;
+
+    public RaskAlyz(Long id, String code, String name, BigDecimal curPri, BigDecimal avrPri, BigDecimal avrPri1, BigDecimal avrPri2, BigDecimal rate, Integer slope, Integer slope1, Integer slope2, Date dealDate, Boolean hold, String reversalRate, Integer highRiskDays, String remark, Integer postiveDays) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -49,7 +56,9 @@ public class RaskAlyz {
         this.dealDate = dealDate;
         this.hold = hold;
         this.reversalRate = reversalRate;
+        this.highRiskDays = highRiskDays;
         this.remark = remark;
+        this.postiveDays = postiveDays;
     }
 
     public RaskAlyz() {
@@ -168,11 +177,27 @@ public class RaskAlyz {
         this.reversalRate = reversalRate == null ? null : reversalRate.trim();
     }
 
+    public Integer getHighRiskDays() {
+        return highRiskDays;
+    }
+
+    public void setHighRiskDays(Integer highRiskDays) {
+        this.highRiskDays = highRiskDays;
+    }
+
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Integer getPostiveDays() {
+        return postiveDays;
+    }
+
+    public void setPostiveDays(Integer postiveDays) {
+        this.postiveDays = postiveDays;
     }
 }

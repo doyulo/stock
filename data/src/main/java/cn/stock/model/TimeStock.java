@@ -32,6 +32,8 @@ public class TimeStock extends StockDay implements Serializable {
     private BigDecimal pe;
     private BigDecimal pb;
 
+    private Integer rateSort;
+
     public BigDecimal getSell1_pri() {
         return sell1_pri;
     }
@@ -206,5 +208,13 @@ public class TimeStock extends StockDay implements Serializable {
 
     public void setPb(BigDecimal pb) {
         this.pb = pb;
+    }
+
+    public Integer getRateSort() {
+        return rateSort;
+    }
+
+    public void setRateSort(Integer rateSort) {
+        this.rateSort = rateSort;
     }
 }

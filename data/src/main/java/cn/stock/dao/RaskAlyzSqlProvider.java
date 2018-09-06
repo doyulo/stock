@@ -80,8 +80,16 @@ public class RaskAlyzSqlProvider {
             sql.VALUES("reversal_rate", "#{reversalRate,jdbcType=VARCHAR}");
         }
         
+        if (record.getHighRiskDays() != null) {
+            sql.VALUES("high_risk_days", "#{highRiskDays,jdbcType=INTEGER}");
+        }
+        
         if (record.getRemark() != null) {
             sql.VALUES("remark", "#{remark,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getPostiveDays() != null) {
+            sql.VALUES("postive_days", "#{postiveDays,jdbcType=INTEGER}");
         }
         
         return sql.toString();
@@ -107,7 +115,9 @@ public class RaskAlyzSqlProvider {
         sql.SELECT("deal_date");
         sql.SELECT("hold");
         sql.SELECT("reversal_rate");
+        sql.SELECT("high_risk_days");
         sql.SELECT("remark");
+        sql.SELECT("postive_days");
         sql.FROM("rask_alyz");
         applyWhere(sql, example, false);
         
@@ -181,8 +191,16 @@ public class RaskAlyzSqlProvider {
             sql.SET("reversal_rate = #{record.reversalRate,jdbcType=VARCHAR}");
         }
         
+        if (record.getHighRiskDays() != null) {
+            sql.SET("high_risk_days = #{record.highRiskDays,jdbcType=INTEGER}");
+        }
+        
         if (record.getRemark() != null) {
             sql.SET("remark = #{record.remark,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getPostiveDays() != null) {
+            sql.SET("postive_days = #{record.postiveDays,jdbcType=INTEGER}");
         }
         
         applyWhere(sql, example, true);
@@ -207,7 +225,9 @@ public class RaskAlyzSqlProvider {
         sql.SET("deal_date = #{record.dealDate,jdbcType=DATE}");
         sql.SET("hold = #{record.hold,jdbcType=BIT}");
         sql.SET("reversal_rate = #{record.reversalRate,jdbcType=VARCHAR}");
+        sql.SET("high_risk_days = #{record.highRiskDays,jdbcType=INTEGER}");
         sql.SET("remark = #{record.remark,jdbcType=VARCHAR}");
+        sql.SET("postive_days = #{record.postiveDays,jdbcType=INTEGER}");
         
         RaskAlyzExample example = (RaskAlyzExample) parameter.get("example");
         applyWhere(sql, example, true);
@@ -270,8 +290,16 @@ public class RaskAlyzSqlProvider {
             sql.SET("reversal_rate = #{reversalRate,jdbcType=VARCHAR}");
         }
         
+        if (record.getHighRiskDays() != null) {
+            sql.SET("high_risk_days = #{highRiskDays,jdbcType=INTEGER}");
+        }
+        
         if (record.getRemark() != null) {
             sql.SET("remark = #{remark,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getPostiveDays() != null) {
+            sql.SET("postive_days = #{postiveDays,jdbcType=INTEGER}");
         }
         
         sql.WHERE("id = #{id,jdbcType=BIGINT}");

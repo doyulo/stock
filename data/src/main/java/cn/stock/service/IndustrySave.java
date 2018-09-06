@@ -55,6 +55,8 @@ public class IndustrySave {
             String[] item = stock.split(",");
             if(item[0].equals("1")){
                 item[1] = "sh"+item[1];
+            }else{
+                item[1] = "sz"+item[1];
             }
             jdbcTemplate.update("INSERT INTO `stock`.`code_industry_rela` (`code`, `industry`) VALUES (?, ?)",item[1],industry);
         }

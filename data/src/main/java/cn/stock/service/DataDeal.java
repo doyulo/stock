@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Future;
 
 @Service
 public class DataDeal {
@@ -50,15 +49,11 @@ public class DataDeal {
             lastSaveDay = sdf.format(lastSaveDate);
         }
 
-
-
         dataFetcher.filterAviableCodesToBuffer();
         HashMap<String, String> data = StockURLDataBuffer.getData();
         Set<String> codeSet = data.keySet();
         List<String> codeList = new ArrayList<>(codeSet);
         Collections.sort(codeList);
-
-        List<Future<Integer>> futureList = new ArrayList<>();
 
         for (String code : codeList) {
             try {
@@ -68,11 +63,6 @@ public class DataDeal {
             }
         }
 
-//        saveAllTimeDeal("20180521");
-
-//        saveAllTimeDeal("20180531");
-//        Runtime r = Runtime.getRuntime();
-//        r.exec("shutdown -s");
 
     }
 

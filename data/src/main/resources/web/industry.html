@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/layui.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择框</label>
+        <div class="layui-input-block">
+            <select name="city" lay-verify="required">
+                <option value=""></option>
+                <option th:each="item:${industry}" th:text="${item.name}" th:value="${item.code}"></option>
+            </select>
+        </div>
+    </div>
+</body>
+</html>

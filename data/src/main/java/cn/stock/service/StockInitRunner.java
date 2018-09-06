@@ -1,77 +1,55 @@
 package cn.stock.service;
 
 import cn.stock.model.TimeStock;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
-public class DataAutoRefresh {
-
+@Order(1)
+public class StockInitRunner implements CommandLineRunner {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @Autowired
     private TencentDataFetcher tencentDataFetcher;
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private DataAutoRefresh dataAutoRefresh;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-    private TsComparator tsComparator = new TsComparator();
 
-    /**
-     * 0: 未知
-     *  1: 股票名字
-     *  2: 股票代码
-     *  3: 当前价格
-     *  4: 昨收
-     *  5: 今开
-     *  6: 成交量（手）
-     *  7: 外盘
-     *  8: 内盘
-     *  9: 买一
-     * 10: 买一量（手）
-     * 11-18: 买二 买五
-     * 19: 卖一
-     * 20: 卖一量
-     * 21-28: 卖二 卖五
-     * 29: 最近逐笔成交
-     * 30: 时间
-     * 31: 涨跌
-     * 32: 涨跌%
-     * 33: 最高
-     * 34: 最低
-     * 35: 价格/成交量（手）/成交额
-     * 36: 成交量（手）
-     * 37: 成交额（万）
-     * 38: 换手率
-     * 39: 市盈率
-     * 40:
-     * 41: 最高
-     * 42: 最低
-     * 43: 振幅
-     * 44: 流通市值
-     * 45: 总市值
-     * 46: 市净率
-     * 47: 涨停价
-     * 48: 跌停价
-     */
-    @Scheduled(cron = "*/3 * * * * *")
-    public void refreshToQQDatabuffer(){
+    @Override
+    public void run(String... args) throws Exception {
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select code,industry from code_industry_rela");
+        for (Map<String, Object> map : maps) {
+            DataBuffer.getCodeRelaIndustry().put(map.get("code").toString(),map.get("industry").toString());
+        }
+
+        List<String> codeList = jdbcTemplate.queryForList("select distinct code from stock_day where cur_date=(select max(cur_date) from stock_day where cur_date>'2018-07-10')", String.class);
+        Set<String> codeSet = new HashSet<>(codeList);
+        tencentDataFetcher.fetch(codeSet);
+
         HashMap<String, String> data = StockURLDataBuffer.getData();
-        Set<String> codeSet = DataBuffer.getTimeStockMap().keySet();
-
         for (String code : codeSet) {
             String stockStr = data.get(code);
             String[] item = stockStr.split("~");
 
-            TimeStock ts = DataBuffer.getTimeStockMap().get(code);
+            if(item.length<49){
+                continue;
+            }
+
+            if(StringUtils.isEmpty(item[44])){
+                continue;
+            }
+
+            TimeStock ts = new TimeStock();
             ts.setBuy1_pri(new BigDecimal(item[9]));
             ts.setBuy1_qty(Integer.parseInt(item[10]));
             ts.setBuy2_pri(new BigDecimal(item[11]));
@@ -116,22 +94,15 @@ public class DataAutoRefresh {
             DataBuffer.getTimeStockMap().put(code,ts);
         }
 
-    }
-    @Scheduled(cron = "*/3 * * * * *")
-    public void refreshQQNetData(){
-        Set<String> codeSet = StockURLDataBuffer.getData().keySet();
-        tencentDataFetcher.fetch(codeSet);
-    }
-
-    @Scheduled(cron = "*/3 * * * * *")
-    public void refreshRateSort(){
-        Set<String> insSet = DataBuffer.getIndustryMap().keySet();
-        for (String insCode : insSet) {
-            List<TimeStock> timeStocks = DataBuffer.getIndustryMap().get(insCode);
-            Collections.sort(timeStocks, tsComparator);
-            for (int i = 0; i < timeStocks.size(); i++) {
-                timeStocks.get(i).setRateSort(i+1);
+        Map<String, String> codeRelaIndustry = DataBuffer.getCodeRelaIndustry();
+        for (String code : codeSet) {
+            TimeStock timeStock = DataBuffer.getTimeStockMap().get(code);
+            String industry = codeRelaIndustry.get(code);
+            if(DataBuffer.getIndustryMap().get(industry)==null){
+                List<TimeStock> tsList = new ArrayList<>();
+                DataBuffer.getIndustryMap().put(industry,tsList);
             }
+            DataBuffer.getIndustryMap().get(industry).add(timeStock);
         }
     }
 }

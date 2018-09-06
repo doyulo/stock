@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="cn" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>layout 后台大布局 - Layui</title>
-    <link th:href="@{../css/layui.css}" rel="stylesheet"/>
+    <link href="/css/layui.css" rel="stylesheet"/>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -11,16 +10,9 @@
         <div class="layui-logo">layui 后台布局</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台a</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item"><a href="javascript:showFrame('/admin')">控制台</a></li>
             <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
-                </dl>
+                <a href="javascript:showFrame('/industry');">行业</a>
             </li>
         </ul>
         <ul class="layui-nav layui-layout-right">
@@ -45,9 +37,9 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">所有商品</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
+                        <dd class="layui-this"><a href="/">自选</a></dd>
+                        <dd><a href="javascript:refresh();">快选</a></dd>
+                        <dd><a href="javascript:refresh2();">全持有</a></dd>
                         <dd><a href="">超链接</a></dd>
                     </dl>
                 </li>
@@ -79,37 +71,160 @@
         © layui.com - 底部固定区域
     </div>
 </div>
-<script th:src="@{../layui.js}"></script>
-<script>
-    //JavaScript代码区域
-    layui.use('element', function(){
-        var element = layui.element;
 
-    });
+</body>
+<script src="/layui.all.js"></script>
+<script src="/layer.js"></script>
+<script>
+    var time1 ;
 
     layui.use('table', function(){
         var table = layui.table;
 
         //第一个实例
-        table.render({
+        var tableObj = table.render({
             elem: '#stock'
-            ,height: 315
-            ,url: '/considerBuy?isAllHold=false' //数据接口
-            ,page: true //开启分页
-            ,cols: [
-                {field: 'code', title: 'ID', width:80, sort: true, fixed: 'left'}
-                ,{field: 'name', title: '名称', width:80}
-                ,{field: 'beginPri', title: '开盘', width:80, sort: true}
-                ,{field: 'curPri', title: '当前', width:80}
-                ,{field: 'maxPri', title: '最高', width: 80, sort: true}
-                ,{field: 'minPri', title: '最低', width: 80, sort: true}
-                ,{field: 'dealAmt', title: '成交', width: 177}
-                ,{field: 'pe', title: '市盈率', width: 80}
-                ,{field: 'marketCap', title: '市值', width: 135, sort: true}
+            ,height: 615
+            ,url: '/careabout' //数据接口
+            ,cols:[
+                [
+                    {type: 'numbers', title: '', width: 30}
+                    ,{field: 'code', title: '编码', width:110, sort: true,templet: function(d){
+                        return '<a href="http://quote.eastmoney.com/concept/'+d.code+'.html" target="_blank">'+d.code+'</a>';
+                    }}
+                    ,{field: 'name', title: '名称', width:110}
+                    ,{field: 'beginPri', title: '开盘', width:80, sort: true,align:'right'}
+                    ,{field: 'curPri', title: '当前', width:80, sort: true,align:'right'}
+                    ,{field: 'rate', title: '涨幅', width: 80, sort: true,align:'right'}
+                    ,{field: 'maxPri', title: '最高', width: 80, sort: true,align:'right'}
+                    ,{field: 'minPri', title: '最低', width: 80, sort: true,align:'right'}
+                    ,{field: 'dealAmt', title: '成交', width: 100, sort: true,align:'right'}
+                    ,{field: 'pe', title: '市盈率', width: 80, sort: true,align:'right'}
+                    ,{field: 'marketCap', title: '市值', width: 135, sort: true,align:'right'}
+                    ,{field: 'rateSort', title: '涨序', width: 80, sort: true,align:'right'}
+                    ,{fixed: 'right', width:165, align:'center', toolbar: '#barSelfChoice'}
+                ]
             ]
         });
 
+        table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                layer.open({
+                    type:2
+                    ,area: ['1200px', '730px']
+                    ,content:'/alyz_detail/'+data.code
+                    // ,url:'/alyz_detail?code='+data.code
+                });
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    layui.jquery.ajax(
+                        {
+                            url:'del_careabout?code='+data.code
+                        }
+                    );
+                });
+            } else if(layEvent === 'add'){ //编辑
+                //do something
+
+                //同步更新缓存对应的值
+                layui.jquery.ajax(
+                    {
+                        url:'add_careabout?code='+data.code
+                    }
+                )
+            }
+        });
+
+        time1 = setInterval(function () {tableObj.reload() },3000);
+
     });
+
+    function refresh() {
+
+        clearInterval(time1);
+
+        var table = layui.table;
+
+        table.render({
+            elem: '#stock'
+            ,height: 615
+            ,url: '/considerBuy?isAllHold=false' //数据接口
+            ,cols:[
+                [
+                    {type: 'numbers', title: '', width: 30}
+                    ,{field: 'code', title: '编码', width:110, sort: true}
+                    ,{field: 'name', title: '名称', width:110}
+                    ,{field: 'beginPri', title: '开盘', width:80, sort: true,align:'right'}
+                    ,{field: 'curPri', title: '当前', width:80}
+                    ,{field: 'rate', title: '涨幅', width: 80, sort: true,align:'right'}
+                    ,{field: 'maxPri', title: '最高', width: 80, align:'right'}
+                    ,{field: 'minPri', title: '最低', width: 80, align:'right'}
+                    ,{field: 'dealAmt', title: '成交', width: 100, align:'right'}
+                    ,{field: 'pe', title: '市盈率', width: 80, align:'right'}
+                    ,{field: 'marketCap', title: '市值', width: 135, sort: true, align:'right'}
+                    ,{field: 'rateSort', title: '涨序', width: 80, sort: true,align:'right'}
+                    ,{fixed: 'right', width:165, align:'center', toolbar: '#barSelfChoice'}
+                ]
+            ]
+        });
+    }
+
+    function refresh2() {
+
+        clearInterval(time1);
+
+        var table = layui.table;
+
+        table.render({
+            elem: '#stock'
+            ,height: 615
+            ,url: '/considerBuy?isAllHold=true' //数据接口
+            ,cols:[
+                [
+                    {type: 'numbers', title: '', width: 30}
+                    ,{field: 'code', title: '编码', width:110, sort: true}
+                    ,{field: 'name', title: '名称', width:110}
+                    ,{field: 'beginPri', title: '开盘', width:80, sort: true,align:'right'}
+                    ,{field: 'curPri', title: '当前', width:80}
+                    ,{field: 'rate', title: '涨幅', width: 80, sort: true,align:'right'}
+                    ,{field: 'maxPri', title: '最高', width: 80, align:'right'}
+                    ,{field: 'minPri', title: '最低', width: 80, align:'right'}
+                    ,{field: 'dealAmt', title: '成交', width: 100, align:'right'}
+                    ,{field: 'pe', title: '市盈率', width: 80, align:'right'}
+                    ,{field: 'marketCap', title: '市值', width: 135, sort: true, align:'right'}
+                    ,{field: 'rateSort', title: '涨序', width: 80, sort: true,align:'right'}
+                    ,{fixed: 'right', width:165, align:'center', toolbar: '#barSelfChoice'}
+                ]
+            ]
+        });
+    }
+
+    function showFrame(url) {
+        layer.open({
+            type: 2
+            ,area: ['1200px', '730px']
+            ,content: url
+        });
+    }
+
+
 </script>
-</body>
+<script type="text/html" id="barSelfChoice">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="add">加自选</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
 </html>

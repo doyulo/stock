@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/layui.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div style="padding: 15px;">
+
+    <table id="stock" lay-filter="test"></table>
+
+</div>
+</body>
+<script src="/layui.all.js"></script>
+<script th:inline="javascript">
+
+    layui.use('table', function(){
+        var table = layui.table;
+
+        var code = [[${code}]];
+
+        //第一个实例
+        table.render({
+            elem: '#stock'
+            ,height: 615
+            ,url: '/queryAlyz?code='+code //数据接口
+            ,cols:[
+                [
+                    {type: 'numbers', title: '', width: 30}
+                    ,{field: 'code', title: '编码', width:95}
+                    ,{field: 'name', title: '名称', width:90}
+                    ,{field: 'curPri', title: '当前', width:80,align:'right'}
+                    ,{field: 'avrPri', title: '短期', width:80,align:'right'}
+                    ,{field: 'avrPri1', title: '中期', width: 80,align:'right'}
+                    ,{field: 'avrPri2', title: '长期', width: 80,align:'right'}
+                    ,{field: 'rate', title: '涨幅', width: 70,align:'right'}
+                    ,{field: 'slope', title: '短斜率', width: 70,align:'right'}
+                    ,{field: 'slope1', title: '中斜率', width: 70,align:'right'}
+                    ,{field: 'slope2', title: '长斜率', width: 70,align:'right'}
+                    ,{field: 'dealDate', title: '日期', width: 120, sort: true,align:'right'}
+                    ,{field: 'remark', title: '备注', width: 100,align:'right'}
+                    ,{field: 'hold',title: 'O', width: 50, align:'center' ,templet: function(d){
+                            if(d.hold){
+                                return '<i class="layui-icon layui-icon-ok"></i>';
+                            }else {
+                                return '<i class="layui-icon layui-icon-close"></i>';
+                            }
+                        }
+                    }
+                ]
+            ]
+        });
+    });
+
+</script>
+</html>

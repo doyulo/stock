@@ -1003,6 +1003,66 @@ public class RaskAlyzExample {
             return (Criteria) this;
         }
 
+        public Criteria andHighRiskDaysIsNull() {
+            addCriterion("high_risk_days is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysIsNotNull() {
+            addCriterion("high_risk_days is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysEqualTo(Integer value) {
+            addCriterion("high_risk_days =", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysNotEqualTo(Integer value) {
+            addCriterion("high_risk_days <>", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysGreaterThan(Integer value) {
+            addCriterion("high_risk_days >", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysGreaterThanOrEqualTo(Integer value) {
+            addCriterion("high_risk_days >=", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysLessThan(Integer value) {
+            addCriterion("high_risk_days <", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysLessThanOrEqualTo(Integer value) {
+            addCriterion("high_risk_days <=", value, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysIn(List<Integer> values) {
+            addCriterion("high_risk_days in", values, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysNotIn(List<Integer> values) {
+            addCriterion("high_risk_days not in", values, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysBetween(Integer value1, Integer value2) {
+            addCriterion("high_risk_days between", value1, value2, "highRiskDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andHighRiskDaysNotBetween(Integer value1, Integer value2) {
+            addCriterion("high_risk_days not between", value1, value2, "highRiskDays");
+            return (Criteria) this;
+        }
+
         public Criteria andRemarkIsNull() {
             addCriterion("remark is null");
             return (Criteria) this;
@@ -1070,6 +1130,66 @@ public class RaskAlyzExample {
 
         public Criteria andRemarkNotBetween(String value1, String value2) {
             addCriterion("remark not between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysIsNull() {
+            addCriterion("postive_days is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysIsNotNull() {
+            addCriterion("postive_days is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysEqualTo(Integer value) {
+            addCriterion("postive_days =", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysNotEqualTo(Integer value) {
+            addCriterion("postive_days <>", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysGreaterThan(Integer value) {
+            addCriterion("postive_days >", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysGreaterThanOrEqualTo(Integer value) {
+            addCriterion("postive_days >=", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysLessThan(Integer value) {
+            addCriterion("postive_days <", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysLessThanOrEqualTo(Integer value) {
+            addCriterion("postive_days <=", value, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysIn(List<Integer> values) {
+            addCriterion("postive_days in", values, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysNotIn(List<Integer> values) {
+            addCriterion("postive_days not in", values, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysBetween(Integer value1, Integer value2) {
+            addCriterion("postive_days between", value1, value2, "postiveDays");
+            return (Criteria) this;
+        }
+
+        public Criteria andPostiveDaysNotBetween(Integer value1, Integer value2) {
+            addCriterion("postive_days not between", value1, value2, "postiveDays");
             return (Criteria) this;
         }
     }
